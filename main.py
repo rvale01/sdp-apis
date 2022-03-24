@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 
 import auth
+import patients
 
 app = Flask(__name__)
 
@@ -10,6 +11,11 @@ DB_NAME = 'akxgfb7wff6k2npl'
 @app.route("/login", methods=['GET'])
 def login():
     return auth.login()
+
+@app.route("/patients-list", methods=['GET'])
+def patients_list():
+    return patients.patients_list()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

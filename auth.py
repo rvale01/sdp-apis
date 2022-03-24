@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import database
 import uuid
+
+# TODO: hash the password
 def login():
     conn = database.get_connection()
     if conn != None:  # Checking if connection is None
@@ -22,3 +24,6 @@ def login():
             return "error connecting to db"
     else:
         return "error connecting to db"
+
+
+# create a new account function
