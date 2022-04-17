@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 
 import auth
 import patients
+import users
+import upload
 
 app = Flask(__name__)
 
@@ -15,6 +17,22 @@ def login():
 @app.route("/patients-list", methods=['GET'])
 def patients_list():
     return patients.patients_list()
+
+@app.route("/patients-data", methods=['GET'])
+def patients_data():
+    return patients.get_patients_data()
+
+@app.route("/get-users", methods=['GET'])
+def get_users():
+    return users.get_users()
+
+@app.route("/add-user", methods=['POST'])
+def add_user():
+    return users.add_user()
+
+@app.route("/upload-csv", methods=['POST'])
+def upload_csv():
+    return upload.upload_csv()
 
 
 if __name__ == '__main__':
