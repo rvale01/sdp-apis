@@ -37,6 +37,41 @@ def create_user(email, hpasswd, full_name, role):
         return True
     return False
 
+def create_patient(full_name,
+            admission_date,
+            estimated_leave_date,
+            medication_needed,
+            last_medicated,
+            allergies,
+            awaiting_tests,
+            test_reviewed,
+            emergency_contact,
+            resuscitation_preference,
+            referred,
+            csv_data):
+    vars = locals()
+    args = []
+    for i in vars:
+        if(str(i) == "csv_data"):
+            for e in vars[i]:
+                args.append(str(e))
+        else:
+            args.append(str(vars[i]))
+    print(args)
+    conn = database.get_connection()
+    if conn != None:
+        dbcursor = conn.cursor()
+        # Not pretty but it works
+        query = f"""
+            INSERT INTO patients (full_name, admission_date, estimated_leave_date, medication_needed, last_medicated, allergies, awaiting_tests, test_reviewed, emergency_contact, resuscitation_preference, referral, end_tidal_co2, feed_vol, feed_vol_adm, fio2, fio2_ratio, insp_time, oxygen_flow_rate, peep, pip, resp_rate, sip, tidal_vol, tidal_vol_actual, tidal_vol_kg, tidal_vol_spon, bmi)
+            VALUES ('{args[0]}', '{args[1]}', '{args[2]}', '{args[3]}', '{args[4]}', '{args[5]}', '{args[6]}', '{args[7]}', '{args[8]}', '{args[9]}', '{args[10]}', '{args[11]}', '{args[12]}', '{args[13]}', '{args[14]}', '{args[15]}', '{args[16]}', '{args[17]}', '{args[18]}', '{args[19]}', '{args[20]}', '{args[21]}', '{args[22]}', '{args[23]}', '{args[24]}', '{args[25]}', '{args[26]}');
+        """
+        print(query)
+        dbcursor.execute(query)
+        conn.commit()
+        dbcursor.close()
+        conn.close()
+
 def get_patients(email):
     conn = database.get_connection()
     if conn != None:
@@ -65,8 +100,8 @@ def edit_patient(patient_id,
             resuscitation_preference=None,
             referred=None,
             csv_data=None):
-    args = ""
     vars = locals()
+    args = ""
     for i in vars:
         if vars[i] != None:
             if(str(i) == "csv_data"):
@@ -78,7 +113,7 @@ def edit_patient(patient_id,
         dbcursor = conn.cursor()
         query = f"""
             UPDATE patients
-            SET {args[args.find(",") + 2:-11]}
+            SET {args[args.find(",") + 2:-2]}
             WHERE patient_id = '{patient_id}';
         """
         dbcursor.execute(query)
