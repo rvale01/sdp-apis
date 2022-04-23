@@ -4,6 +4,7 @@ import auth
 import patients
 import users
 import upload
+import rooms
 
 app = Flask(__name__)
 
@@ -34,6 +35,9 @@ def add_user():
 def upload_csv():
     return upload.upload_csv()
 
+@app.route('/rooms-list', methods=['GET'])
+def get_user_role():
+    return rooms.rooms_list()
 
 if __name__ == '__main__':
     app.run(debug=True)

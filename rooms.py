@@ -2,23 +2,26 @@ from flask import Flask, request, jsonify
 import database
 import uuid
 
-def login():
+def rooms_list():
     conn = database.get_connection()
     if conn != None:  # Checking if connection is None
         if conn.is_connected() and request.method == 'GET':  # Checking if connection is established
-            email = request.args.get("email")
-            password = request.args.get("password")
             dbcursor = conn.cursor()
-            dbcursor.execute('SELECT role FROM Users WHERE email =%s AND password =%s', (email,password,))
-            role = dbcursor.fetchone()
+            dbcursor.execute('SELECT * FROM room')
+            details = dbcursor.fetchall()
             conn.commit()
             dbcursor.close()
             conn.close()
-            if(role == None):
+            for x in range(len(details)):
+                details[x] = {
+                    "room_id": details[x][0],
+                    "patient_id": details[x][1],
+                    "staff_email": details[x][2],
+                }
+            if(details == None):
                 return "Not found"
             else:
-                session = str(uuid.uuid4())
-                return jsonify({'sessionId': session, 'role': role})
+                return jsonify({'rooms': details})
         else:
             return "error connecting to db"
     else:
