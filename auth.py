@@ -23,3 +23,127 @@ def login():
             return "error connecting to db"
     else:
         return "error connecting to db"
+<<<<<<< HEAD
+=======
+
+def create_user(email, hpasswd, full_name, role):
+    conn = database.get_connection()
+    if conn != None:
+        dbcursor = conn.cursor()
+        query = """INSERT INTO Users
+            VALUES (%s, %s, %s, %s);"""
+        data = (email, hpasswd, full_name, role)
+        dbcursor.execute(query, data)
+        conn.commit()
+        dbcursor.close()
+        conn.close()
+        return True
+    return False
+
+def create_patient(full_name,
+            admission_date,
+            estimated_leave_date,
+            medication_needed,
+            last_medicated,
+            allergies,
+            awaiting_tests,
+            test_reviewed,
+            emergency_contact,
+            resuscitation_preference,
+            referred,
+            csv_data):
+    vars = locals()
+    args = []
+    for i in vars:
+        if(str(i) == "csv_data"):
+            for e in vars[i]:
+                args.append(str(e))
+        else:
+            args.append(str(vars[i]))
+    print(args)
+    conn = database.get_connection()
+    if conn != None:
+        dbcursor = conn.cursor()
+        # Not pretty but it works
+        query = f"""
+            INSERT INTO patients (full_name, admission_date, estimated_leave_date, medication_needed, last_medicated, allergies, awaiting_tests, test_reviewed, emergency_contact, resuscitation_preference, referral, end_tidal_co2, feed_vol, feed_vol_adm, fio2, fio2_ratio, insp_time, oxygen_flow_rate, peep, pip, resp_rate, sip, tidal_vol, tidal_vol_actual, tidal_vol_kg, tidal_vol_spon, bmi)
+            VALUES ('{args[0]}', '{args[1]}', '{args[2]}', '{args[3]}', '{args[4]}', '{args[5]}', '{args[6]}', '{args[7]}', '{args[8]}', '{args[9]}', '{args[10]}', '{args[11]}', '{args[12]}', '{args[13]}', '{args[14]}', '{args[15]}', '{args[16]}', '{args[17]}', '{args[18]}', '{args[19]}', '{args[20]}', '{args[21]}', '{args[22]}', '{args[23]}', '{args[24]}', '{args[25]}', '{args[26]}');
+        """
+        print(query)
+        dbcursor.execute(query)
+        conn.commit()
+        dbcursor.close()
+        conn.close()
+
+def get_patients(email):
+    conn = database.get_connection()
+    if conn != None:
+        dbcursor = conn.cursor()
+        query = f"""
+            SELECT * FROM patients
+            INNER JOIN patient_staff ON patients.patient_id=patient_staff.patient_id
+            WHERE patient_staff.staff_email='{email}'"""
+        dbcursor.execute(query)
+        data = dbcursor.fetchall()
+        dbcursor.close()
+        conn.close()
+        return data
+    return None
+
+def edit_patient(patient_id,
+            full_name=None,
+            admission_date=None,
+            estimated_leave_date=None,
+            medication_needed=None,
+            last_medicated=None,
+            allergies=None,
+            awaiting_tests=None,
+            test_reviewed=None,
+            emergency_contact=None,
+            resuscitation_preference=None,
+            referred=None,
+            csv_data=None):
+    vars = locals()
+    args = ""
+    for i in vars:
+        if vars[i] != None:
+            if(str(i) == "csv_data"):
+                args += data_to_columns(vars[i])
+            else:
+                args += str(i) + "=" + "'" + str(vars[i]) + "', "
+    conn = database.get_connection()
+    if conn != None:
+        dbcursor = conn.cursor()
+        query = f"""
+            UPDATE patients
+            SET {args[args.find(",") + 2:-2]}
+            WHERE patient_id = '{patient_id}';
+        """
+        dbcursor.execute(query)
+        conn.commit()
+        dbcursor.close()
+        conn.close()
+
+def data_to_columns(csv_data):
+    #Assuming data is complete
+    names = ["end_tidal_co2",
+    "feed_vol",
+    "feed_vol_adm",
+    "fio2",
+    "fio2_ratio",
+    "insp_time",
+    "oxygen_flow_rate",
+    "peep",
+    "pip",
+    "resp_rate",
+    "sip",
+    "tidal_vol",
+    "tidal_vol_actual",
+    "tidal_vol_kg",
+    "tidal_vol_spon",
+    "bmi"]
+    output = ""
+    for i, e in zip(csv_data, names):
+        output += str(e) + " = '" + i + "', "
+    return output
+>>>>>>> 4f808e869255655d535134d1bd0fd82192efae6e
