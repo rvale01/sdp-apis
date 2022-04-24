@@ -8,9 +8,8 @@ def upload_csv():
         if conn.is_connected() and request.method == 'POST':  # Checking if connection is established
             dbcursor = conn.cursor()
             data = json.loads(request.data)['file']
-            dbcursor.execute('DELETE FROM room')
-            dbcursor.execute('DELETE FROM patients')
-            dbcursor.execute("INSERT INTO Users (email, password, full_name, role) VALUES ('doctor@gmail.com', 'password', 'Doctor', 'Doctor')")
+            dbcursor.execute('DELETE FROM room WHERE room_id > 0')
+            dbcursor.execute('DELETE FROM patients WHERE patient_id > 0')
             # assuming that the staff already exists
             # not handling if the staff_email does not exist
             for x in range(1, len(data)):

@@ -23,8 +23,6 @@ def login():
             return "error connecting to db"
     else:
         return "error connecting to db"
-<<<<<<< HEAD
-=======
 
 def create_user(email, hpasswd, full_name, role):
     conn = database.get_connection()
@@ -146,4 +144,3 @@ def data_to_columns(csv_data):
     for i, e in zip(csv_data, names):
         output += str(e) + " = '" + i + "', "
     return output
->>>>>>> 4f808e869255655d535134d1bd0fd82192efae6e
