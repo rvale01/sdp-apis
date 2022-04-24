@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import database
 import uuid
+
 def login():
     conn = database.get_connection()
     if conn != None:  # Checking if connection is None
@@ -8,20 +9,22 @@ def login():
             email = request.args.get("email")
             password = request.args.get("password")
             dbcursor = conn.cursor()
-            dbcursor.execute('SELECT email, password, full_name, role FROM Users WHERE email =%s AND password =%s', (email,password,))
-            details = dbcursor.fetchone()
+            dbcursor.execute('SELECT role FROM Users WHERE email =%s AND password =%s', (email,password,))
+            role = dbcursor.fetchone()
             conn.commit()
             dbcursor.close()
             conn.close()
-            if(details == None):
+            if(role == None):
                 return "Not found"
             else:
-                session = uuid.uuid4()
-                return str(session)
+                session = str(uuid.uuid4())
+                return jsonify({'sessionId': session, 'role': role})
         else:
             return "error connecting to db"
     else:
         return "error connecting to db"
+<<<<<<< HEAD
+=======
 
 def create_user(email, hpasswd, full_name, role):
     conn = database.get_connection()
@@ -143,3 +146,4 @@ def data_to_columns(csv_data):
     for i, e in zip(csv_data, names):
         output += str(e) + " = '" + i + "', "
     return output
+>>>>>>> 4f808e869255655d535134d1bd0fd82192efae6e
