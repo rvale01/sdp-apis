@@ -24,20 +24,6 @@ def login():
     else:
         return "error connecting to db"
 
-def create_user(email, hpasswd, full_name, role):
-    conn = database.get_connection()
-    if conn != None:
-        dbcursor = conn.cursor()
-        query = """INSERT INTO Users
-            VALUES (%s, %s, %s, %s);"""
-        data = (email, hpasswd, full_name, role)
-        dbcursor.execute(query, data)
-        conn.commit()
-        dbcursor.close()
-        conn.close()
-        return True
-    return False
-
 def create_patient(full_name,
             admission_date,
             estimated_leave_date,
@@ -72,21 +58,6 @@ def create_patient(full_name,
         conn.commit()
         dbcursor.close()
         conn.close()
-
-def get_patients(email):
-    conn = database.get_connection()
-    if conn != None:
-        dbcursor = conn.cursor()
-        query = f"""
-            SELECT * FROM patients
-            INNER JOIN patient_staff ON patients.patient_id=patient_staff.patient_id
-            WHERE patient_staff.staff_email='{email}'"""
-        dbcursor.execute(query)
-        data = dbcursor.fetchall()
-        dbcursor.close()
-        conn.close()
-        return data
-    return None
 
 def edit_patient(patient_id,
             full_name=None,
