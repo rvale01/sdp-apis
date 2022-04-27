@@ -48,3 +48,47 @@ def upload_csv():
             return "error connecting to db"
     else:
         return "error connecting to db"
+
+def add_patient():
+    data = str(request.data).split(",")
+    data[0] = data[0][2:]
+    data[len(data) - 1] = data[len(data) - 1][:-1]
+    conn = database.get_connection()
+    if conn != None:  # Checking if connection is None
+        if conn.is_connected() and request.method == 'POST':  # Checking if connection is established
+            dbcursor = conn.cursor()
+            dbcursor.execute(
+                "INSERT INTO patients \
+                    (full_name, admission_date, estimated_leave_date, \
+                    medication_needed, last_medicated, allergies, awaiting_tests,\
+                    test_reviewed, emergency_contact, resuscitation_preference, referral,\
+                    end_tidal_co2, feed_vol, feed_vol_adm, fio2, \
+                    fio2_ratio, insp_time, oxygen_flow_rate, peep, \
+                    pip, resp_rate, sip, tidal_vol, \
+                    tidal_vol_actual, tidal_vol_kg, tidal_vol_spon, bmi\
+                    ) VALUES \
+                    (%s, %s, %s, %s, \
+                    %s, %s, %s, %s, \
+                    %s, %s, %s, %s, \
+                    %s, %s, %s, %s, \
+                    %s, %s, %s, %s, \
+                    %s, %s, %s, %s, \
+                    %s, %s, %s)", \
+                        (data[0], data[1], data[2],  data[3],  data[4], \
+                        data[5],  data[6],  data[7],  data[8],  \
+                        data[9],  data[10],  data[11],  data[12], \
+                        data[13],  data[14], data[15],  data[16], \
+                        data[17],  data[18], data[19],  data[20], \
+                        data[21],  data[22], data[23], data[24], \
+                        data[25],  data[26]
+                        ))
+            dbcursor.execute("INSERT INTO room (patient_id, staff_email) VALUES (%s, %s)", (dbcursor.lastrowid, data[27]))
+
+            conn.commit()
+            dbcursor.close()
+            conn.close()
+            return "okay"
+        else:
+            return "error connecting to db"
+    else:
+        return "error connecting to db"

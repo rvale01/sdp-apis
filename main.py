@@ -31,6 +31,10 @@ def get_users():
 def add_user():
     return users.add_user()
 
+@app.route("/add-patient", methods=['POST'])
+def add_patient():
+    return upload.add_patient()
+
 @app.route("/upload-csv", methods=['POST'])
 def upload_csv():
     return upload.upload_csv()
