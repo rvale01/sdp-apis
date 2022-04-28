@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import database 
 import json
+import datetime
 
 def upload_csv():
     conn = database.get_connection()
@@ -57,9 +58,12 @@ def add_patient():
     if conn != None:  # Checking if connection is None
         if conn.is_connected() and request.method == 'POST':  # Checking if connection is established
             dbcursor = conn.cursor()
+            id_str = str(datetime.datetime.timestamp(datetime.datetime.now()))
+            id = int(id_str[5:10])
+            print(id)
             dbcursor.execute(
                 "INSERT INTO patients \
-                    (full_name, admission_date, estimated_leave_date, \
+                    (patient_id, full_name, admission_date, estimated_leave_date, \
                     medication_needed, last_medicated, allergies, awaiting_tests,\
                     test_reviewed, emergency_contact, resuscitation_preference, referral,\
                     end_tidal_co2, feed_vol, feed_vol_adm, fio2, \
@@ -67,14 +71,14 @@ def add_patient():
                     pip, resp_rate, sip, tidal_vol, \
                     tidal_vol_actual, tidal_vol_kg, tidal_vol_spon, bmi\
                     ) VALUES \
-                    (%s, %s, %s, %s, \
+                    (%s, %s, %s, %s, %s, \
                     %s, %s, %s, %s, \
                     %s, %s, %s, %s, \
                     %s, %s, %s, %s, \
                     %s, %s, %s, %s, \
                     %s, %s, %s, %s, \
                     %s, %s, %s)", \
-                        (data[0], data[1], data[2],  data[3],  data[4], \
+                        (id, data[0], data[1], data[2],  data[3],  data[4], \
                         data[5],  data[6],  data[7],  data[8],  \
                         data[9],  data[10],  data[11],  data[12], \
                         data[13],  data[14], data[15],  data[16], \
@@ -82,7 +86,7 @@ def add_patient():
                         data[21],  data[22], data[23], data[24], \
                         data[25],  data[26]
                         ))
-            dbcursor.execute("INSERT INTO room (patient_id, staff_email) VALUES (%s, %s)", (dbcursor.lastrowid, data[27]))
+            dbcursor.execute("INSERT INTO room (patient_id, staff_email) VALUES (%s, %s)", (id, data[27]))
 
             conn.commit()
             dbcursor.close()
