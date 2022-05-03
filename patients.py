@@ -52,3 +52,19 @@ def get_patients_data():
             return "error connecting to db"
     else:
         return "error connecting to db"
+
+def set_referred():
+    conn = database.get_connection()
+    if conn != None:  # Checking if connection is None
+        if conn.is_connected() and request.method == 'POST':  # Checking if connection is established
+            id = request.args.get("id")
+            dbcursor = conn.cursor()
+            dbcursor.execute('UPDATE patients SET referral = 0 WHERE (patient_id = %s)', (id,))
+            conn.commit()
+            dbcursor.close()
+            conn.close()
+            return "Okay"
+        else:
+            return "error connecting to db"
+    else:
+        return "error connecting to db"

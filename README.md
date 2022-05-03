@@ -7,8 +7,16 @@ In order to run this project locally, make sure you have python & pip installed.
 First clone the project:
 <code>git clone https://gitlab.uwe.ac.uk/v2-ronchi/system-development-feeding-dashboard-apis</code><br/>
 
-Start the virtual environment:
+Create a new virtual environment and activate it:
+The command needed differs on which OS you are working on
+
+<b>MacOs or Linux </b>
+<code>python3 -m venv venv</code><br/>
 <code>source ./venv/bin/activate</code><br/>
+
+<b>Windows</b> 
+<code>python3 -m venv venv</code><br/>
+<code>venv\Scripts\Activate.ps1</code>
 
 Then install the dependecies:
 <code>pip install mysql.connector</code><br/>
