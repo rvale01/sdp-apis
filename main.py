@@ -43,5 +43,9 @@ def upload_csv():
 def get_user_role():
     return rooms.rooms_list()
 
+@app.route('/set-referred', methods=['POST'])
+def set_referred():
+    return patients.set_referred
+
 if __name__ == '__main__':
     app.run(debug=True)
