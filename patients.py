@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import database
-import uuid
+import json
 
 def patients_list():
     conn = database.get_connection()
@@ -57,9 +57,10 @@ def set_referred():
     conn = database.get_connection()
     if conn != None:  # Checking if connection is None
         if conn.is_connected() and request.method == 'POST':  # Checking if connection is established
-            id = request.args.get("id")
+            print(json.loads(request.data)['id'])
+            id = json.loads(request.data)['id']
             dbcursor = conn.cursor()
-            dbcursor.execute('UPDATE patients SET referral = 0 WHERE (patient_id = %s)', (id,))
+            dbcursor.execute('UPDATE patients SET referral = 0 WHERE patient_id = %s', (id,))
             conn.commit()
             dbcursor.close()
             conn.close()
